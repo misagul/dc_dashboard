@@ -8,10 +8,12 @@ class Bot(models.Model):
 class Cookie(models.Model):
     name = models.CharField(max_length=255)
     cookie = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    count = models.IntegerField(default=0)
     status = models.BooleanField()
 
     def __str__(self):
-        return self.name
+        return f"cookie {self.name}"
 
 class Channel(models.Model):
     channel_id = models.IntegerField()
