@@ -1,9 +1,12 @@
 {% if cookies %}
-    <ul>
+<table>
     {% for cookie in cookies %}
-        <li>{{ cookie.cookie, cookie.bot_id, cookie.status }}</li>
+    <tr>
+        <td>{{ cookie.name }}</td>
+        <td>{{ cookie.status }}</td>
+    </tr>
     {% endfor %}
-    </ul>
+</table>
 {% else %}
     <p>No cookies are available.</p>
 {% endif %}

@@ -1,15 +1,15 @@
 from django.http import HttpResponse
-from .models import Cookie, Bot, Channel
+from .models import Cookie, Bot, Channel, Usage
 from django.shortcuts import render
 
 def index(request):
     return HttpResponse("Deneme")
 
-def members(request):
+def usages(request):
     context = {
-        
+        'usages': Usage.objects.all().order_by('user_id')
     }
-    return render(request, "members.html", context)
+    return render(request, "usages.html", context)
 
 def cookies(request):
     context = {
