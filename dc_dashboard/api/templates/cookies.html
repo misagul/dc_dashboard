@@ -1,57 +1,45 @@
-{% load tailwind_tags %}
+{% extends "master.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        {% tailwind_css %}
-    </head>
-    <body>
-        <div class="relative overflow-x-auto px-10 py-7">
-            {% if cookies %}
-            <table class="w-full text-sm text-left text-gray-500">
-                <thead class="text-md text-gray-300 uppercase bg-gray-700">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">name</th>
-                        <th scope="col" class="px-6 py-3">date</th>
-                        <th scope="col" class="px-6 py-3">count</th>
-                        <th scope="col" class="px-6 py-3">status</th>
-                        <th scope="col" class="px-6 py-3">delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cookie in cookies %}
-                    <tr
-                        class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
+{% block content %}
+<div class="relative overflow-x-auto px-10 py-7">
+    {% if cookies %}
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-md text-gray-300 uppercase bg-gray-700">
+            <tr>
+                <th scope="col" class="px-6 py-3">name</th>
+                <th scope="col" class="px-6 py-3">date</th>
+                <th scope="col" class="px-6 py-3">count</th>
+                <th scope="col" class="px-6 py-3">status</th>
+                <th scope="col" class="px-6 py-3">delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cookie in cookies %}
+            <tr
+                class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
+            >
+                <td class="px-6 py-4">{{ cookie.name }}</td>
+                <td class="px-6 py-4">{{ cookie.date }}</td>
+                <td class="px-6 py-4">{{ cookie.count }}</td>
+                <td class="px-6 py-4">
+                    {% if cookie.status %}
+                    <span style="color: green">●</span> Active {% else %}
+                    <span style="color: red">●</span> Deactive {% endif %}
+                </td>
+                <td scope="col" class="px-6 py-3">
+                    <a
+                        href="#"
+                        class="font-medium text-blue-500 hover:underline"
+                        >Delete</a
                     >
-                        <td class="px-6 py-4">{{ cookie.name }}</td>
-                        <td class="px-6 py-4">{{ cookie.date }}</td>
-                        <td class="px-6 py-4">{{ cookie.count }}</td>
-                        <td class="px-6 py-4">
-                            {% if cookie.status %}
-                            <span style="color: green">●</span> Active
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No cookies are available.</p>
+    {% endif %}
+</div>
 
-                            {% else %}
-                            <span style="color: red">●</span> Deactive
-
-                            {% endif %}
-                        </td>
-                        <td scope="col" class="px-6 py-3">
-                            <a
-                                href="#"
-                                class="font-medium text-blue-500 hover:underline"
-                                >Delete</a
-                            >
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No cookies are available.</p>
-            {% endif %}
-        </div>
-    </body>
-</html>
+{% endblock %}
