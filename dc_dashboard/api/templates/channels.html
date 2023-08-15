@@ -2,24 +2,24 @@
 
 {% block content %}
 <div class="relative overflow-x-auto px-10 py-7">
-    {% if usages %}
+    {% if channels %}
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
             <tr>
-                <th scope="col" class="px-6 py-3">user_id</th>
                 <th scope="col" class="px-6 py-3">channel_id</th>
-                <th scope="col" class="px-6 py-3">usage</th>
+                <th scope="col" class="px-6 py-3">channel_limit</th>
+                <th scope="col" class="px-6 py-3">channel_reset</th>
                 <th scope="col" class="px-6 py-3">edit</th>
             </tr>
         </thead>
         <tbody>
-            {% for usage in usages %}
+            {% for channel in channels %}
             <tr
                 class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
             >
-                <td class="px-6 py-4">{{ usage.user_id }}</td>
-                <td class="px-6 py-4">{{ usage.channel_id }}</td>
-                <td class="px-6 py-4">{{ usage.usage }}</td>
+                <td class="px-6 py-4">{{ channel.channel_id }}</td>
+                <td class="px-6 py-4">{{ channel.channel_limit }}</td>
+                <td class="px-6 py-4">{{ channel.channel_reset }}</td>
                 <td scope="col" class="px-6 py-3">
                     <a
                         href="#"
@@ -32,7 +32,7 @@
         </tbody>
     </table>
     {% else %}
-    <p class="text-white">No usages are available.</p>
+    <p class="text-white">No channels are available.</p>
     {% endif %}
 </div>
 {% endblock %}

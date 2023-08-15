@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from .models import Cookie, Bot, Channel, Usage
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 
 def index(request):
     return render(request, "index.html")
@@ -19,12 +19,21 @@ def cookies(request):
     }
     return render(request, "cookies.html", context)
 
+def channels(request):
+    context = {
+        'channels' : Channel.objects.all()
+    }
+    return render(request, "channels.html", context)
+
 def login_request(request):
-    if request.user:
-        return redirect("cookies")
+    print("login request")
+    if request.user.is_authenticated:
+        print(request.user.username)
+        return redirect("index")
 
     context = {}
     if request.method == "POST":
+        print('Post')
         username = request.POST.get('username')
         password = request.POST.get('password')
         if username and password:
@@ -38,3 +47,7 @@ def login_request(request):
                 }
 
     return render(request, "login.html", context=context)
+
+def logout_request(request):
+        logout(request)
+        return redirect("login")
