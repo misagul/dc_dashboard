@@ -1,0 +1,107 @@
+{% load tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>gulHelp</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="https://cdn.discordapp.com/attachments/841731242588241921/849978136695013376/depositphotos_202691964-stock-illustration-letters-logo-gh-blue-template.jpg"
+        />
+        {% tailwind_css %}
+    </head>
+    <body class="bg-gray-900">
+        <nav class="border-gray-200">
+            <div
+                class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+            >
+                <a href="/" class="flex items-center">
+                    <img
+                        class="rounded-full w-12 h-12"
+                        src="https://cdn.discordapp.com/attachments/841731242588241921/849978136695013376/depositphotos_202691964-stock-illustration-letters-logo-gh-blue-template.jpg"
+                        alt=""
+                    />
+                    <span
+                        class="pl-4 self-center text-2xl font-semibold whitespace-nowrap text-white"
+                        >gulHelp</span
+                    >
+                </a>
+                <button
+                    data-collapse-toggle="navbar-default"
+                    type="button"
+                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden focus:outline-none focus:ring-2 text-gray-400 hover:bg-gray-700 focus:ring-gray-600"
+                    aria-controls="navbar-default"
+                    aria-expanded="false"
+                >
+                    <span class="sr-only">Open main menu</span>
+                    <svg
+                        class="w-5 h-5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 17 14"
+                    >
+                        <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 1h15M1 7h15M1 13h15"
+                        />
+                    </svg>
+                </button>
+                <div
+                    class="hidden w-full md:block md:w-auto"
+                    id="navbar-default"
+                >
+                    <ul
+                        class="font-medium flex flex-col p-4 text-center md:p-0 mt-4 border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-800 md:bg-gray-900 border-gray-700"
+                    >
+                        <li class="mt-1">
+                            <a
+                                href="{% url 'home' %}"
+                                class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
+                                aria-current="page"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="mt-1">
+                            <a
+                                href="{% url 'usages' %}"
+                                class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
+                                >Usages</a
+                            >
+                        </li>
+                        <li class="mt-1">
+                            <a
+                                href="{% url 'cookies' %}"
+                                class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
+                                >Cookies</a
+                            >
+                        </li>
+                        <li class="mt-1">
+                            <a
+                                href="{% url 'channels' %}"
+                                class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
+                                >Channels</a
+                            >
+                        </li>
+                        <li>
+                          {% if user.is_authenticated %}
+                          <a href="{% url 'logout' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-red-600 hover:bg-red-700 focus:ring-red-900">Logout</button></a>
+                          {% else %}
+                          <a href="{% url 'login' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-green-600 hover:bg-green-700 focus:ring-green-900">Login</button></a>
+                          {% endif %}
+                      </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <script src="https://unpkg.com/flowbite@1.5.2/dist/flowbite.js"></script>
+        {% block content %} {% endblock %}
+    </body>
+</html>
