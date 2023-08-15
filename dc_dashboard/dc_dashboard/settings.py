@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'api',
     'dashboard',
     'tailwind',
     'theme',
@@ -137,6 +138,8 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+ALLOWED_HOSTS = ['*']
 
 NPM_BIN_PATH = r"C:\Users\bt.staj2\Downloads\node-v20.5.1-win-x64\node-v20.5.1-win-x64\npm.cmd"
 
