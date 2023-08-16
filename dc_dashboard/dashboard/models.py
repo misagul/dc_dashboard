@@ -16,7 +16,7 @@ class Cookie(models.Model):
     status = models.BooleanField()
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
 class Channel(models.Model):
     channel_id = models.IntegerField()
@@ -24,7 +24,7 @@ class Channel(models.Model):
     channel_reset = models.IntegerField()
 
     def __str__(self):
-        return self.channel_id
+        return f"{self.channel_id}"
 
 class Usage(models.Model):
     user_id = models.IntegerField()
@@ -32,4 +32,4 @@ class Usage(models.Model):
     usage = models.IntegerField()
 
     def __str__(self):
-        return self.user_id
+        return f"{self.user_id}"

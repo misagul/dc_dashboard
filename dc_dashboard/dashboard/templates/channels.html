@@ -1,7 +1,17 @@
-{% extends "master.html" %}
+{% extends "master.html" %} {% block content %}
 
-{% block content %}
-<div class="relative overflow-x-auto px-10 py-7">
+<div class="justify-center flex">
+    <button
+        id="channel-btn"
+        type="button"
+        class="text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
+        onclick="addNewButton()"
+    >
+        Add New
+    </button>
+</div>
+
+<div id="main-channels-table" class="relative overflow-x-auto px-10 py-7">
     {% if channels %}
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
@@ -15,15 +25,17 @@
         <tbody>
             {% for channel in channels %}
             <tr
+                id="channel-{{ channel.id}}"
                 class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
             >
                 <td class="px-6 py-4">{{ channel.channel_id }}</td>
                 <td class="px-6 py-4">{{ channel.channel_limit }}</td>
-                <td class="px-6 py-4">{{ channel.channel_reset }}</td>
+                <td class="px-6 py-4">{{ channel.channel_reset }} hours</td>
                 <td scope="col" class="px-6 py-3">
                     <a
-                        href="{% url 'api:delete_channel' %}"
-                        class="font-medium text-blue-500 hover:underline"
+                        data-id="{{ channel.id }}"
+                        href="#"
+                        class="edit-btn font-medium text-blue-500 hover:underline"
                         >Edit</a
                     >
                 </td>
@@ -35,4 +47,128 @@
     <p class="text-white">No channels are available.</p>
     {% endif %}
 </div>
+
+
+
+<div id="add-channel-form" class="justify-center px-10 py-7 hidden">
+    <form class="w-96 bg-gray-800 p-10 rounded-xl shadow-[0_35px_60px_-15px_rgba(50,50,50,0.9)]">
+        <div class="mb-6">
+            <label
+                for="channel-id"
+                class="block mb-2 text-sm font-medium text-white"
+                >Channel ID</label
+            >
+            <input
+                type="number"
+                id="channel-id"
+                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+        <div class="mb-6">
+            <label
+                for="channel-limit"
+                class="block mb-2 text-sm font-medium text-white"
+                >Channel Limit</label
+            >
+            <input
+                type="number"
+                id="channel-limit"
+                class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
+        <div class="mb-6">
+            <label
+                for="channel-reset"
+                class="block mb-2 text-sm font-medium text-white"
+                >Channel Reset</label
+            >
+            <input
+                type="number"
+                id="channel-reset"
+                class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
+        <a href="#"
+            ><button
+            id="add-btn"
+                type="submit"
+                class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+            >
+                Add
+            </button></a
+        >
+        <div class="ch-add-success mt-3 text-sm rounded-lg bg-gray-800 text-green-400 hidden" role="alert">
+            <span class="font-medium">Channel added.</span>
+          </div>
+        
+          <div class="ch-add-error mt-3 text-sm rounded-lg bg-gray-800 text-red-400 hidden" role="alert">
+            <span class="font-medium">Error...</span> 
+          </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(".edit-btn").click(function (e) {
+        var id = $(this).attr("data-id");
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:delete_channel' %}",
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(data);
+                $("#channel-" + id).remove();
+            },
+        });
+    });
+
+    $("#add-btn").click(function (e) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:add_channel' %}",
+            data: {
+                channel_id: $("#channel-id").val(),
+                channel_limit: $("#channel-limit").val(),
+                channel_reset: $("#channel-reset").val(),
+                
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(data);
+                $(".ch-add-success").show(100);
+                $(".ch-add-error").hide();
+            },
+            error: (error){
+                console.log(error);
+            }
+        });
+    });
+
+    function addNewButton() {
+        var mainTable = document.getElementById("main-channels-table");
+        var channelForm = document.getElementById("add-channel-form");
+        var channelBtn = document.getElementById("channel-btn");
+
+        if (mainTable.style.display != "none") {
+            mainTable.style.display = "none";
+            channelForm.style.display = "flex";
+            channelBtn.textContent = "Go Back";
+        } else {
+            mainTable.style.display = "block";
+            channelForm.style.display = "none";
+            channelBtn.textContent = "Add New";
+        }
+    }
+</script>
+
 {% endblock %}

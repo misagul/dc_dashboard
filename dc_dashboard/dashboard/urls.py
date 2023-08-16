@@ -2,6 +2,8 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth.decorators import login_required
 
+app_name = "dashboard"
+
 urlpatterns = [
     path("", views.home, name="home"),
     path("cookies/", login_required(views.cookies), name="cookies"),

@@ -27,8 +27,8 @@ def channels(request):
 
 def login_request(request):
     if request.user.is_authenticated:
-        return redirect("home")
-
+        return redirect("dashboard:home")
+    
     context = {}
     if request.method == "POST":
         username = request.POST.get('username')
@@ -37,7 +37,7 @@ def login_request(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("home")
+                return redirect("dashboard:home")
             else:
                 context = {
                     'error_message': 'User not found.'
@@ -47,4 +47,4 @@ def login_request(request):
 
 def logout_request(request):
         logout(request)
-        return redirect("login")
+        return redirect("dashboard:login")

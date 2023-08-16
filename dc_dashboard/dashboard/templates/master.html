@@ -62,7 +62,7 @@
                     >
                         <li class="mt-1">
                             <a
-                                href="{% url 'home' %}"
+                                href="{% url 'dashboard:home' %}"
                                 class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
                                 aria-current="page"
                                 >Home</a
@@ -70,37 +70,37 @@
                         </li>
                         <li class="mt-1">
                             <a
-                                href="{% url 'usages' %}"
+                                href="{% url 'dashboard:usages' %}"
                                 class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
                                 >Usages</a
                             >
                         </li>
                         <li class="mt-1">
                             <a
-                                href="{% url 'cookies' %}"
+                                href="{% url 'dashboard:cookies' %}"
                                 class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
                                 >Cookies</a
                             >
                         </li>
                         <li class="mt-1">
                             <a
-                                href="{% url 'channels' %}"
+                                href="{% url 'dashboard:channels' %}"
                                 class="block py-2 pl-3 pr-4 rounded md:border-0 md:p-0 text-white md:hover:text-blue-500 md:hover:bg-transparent"
                                 >Channels</a
                             >
                         </li>
                         <li>
                           {% if user.is_authenticated %}
-                          <a href="{% url 'logout' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-red-600 hover:bg-red-700 focus:ring-red-900">Logout</button></a>
+                          <a href="{% url 'dashboard:logout' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-red-600 hover:bg-red-700 focus:ring-red-900">Logout</button></a>
                           {% else %}
-                          <a href="{% url 'login' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-green-600 hover:bg-green-700 focus:ring-green-900">Login</button></a>
+                          <a href="{% url 'dashboard:login' %}"><button type="button" class="text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2 text-center bg-green-600 hover:bg-green-700 focus:ring-green-900">Login</button></a>
                           {% endif %}
                       </li>
                     </ul>
                 </div>
             </div>
         </nav>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <script src="https://unpkg.com/flowbite@1.5.2/dist/flowbite.js"></script>
         {% block content %} {% endblock %}
     </body>
