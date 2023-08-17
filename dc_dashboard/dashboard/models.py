@@ -1,13 +1,5 @@
 from django.db import models
 
-class Bot(models.Model):
-    bot_id = models.IntegerField()
-    channels = models.ManyToManyField('dashboard.Channel', related_name='bot_channels')
-    cookies = models.ManyToManyField('dashboard.Cookie', related_name="bot_cookies")
-
-    def __str__(self):
-        return self.bot_id
-
 class Cookie(models.Model):
     name = models.CharField(max_length=255)
     cookie = models.TextField()
@@ -19,12 +11,9 @@ class Cookie(models.Model):
         return f"{self.name}"
 
 class Channel(models.Model):
-    channel_id = models.IntegerField()
+    channel_id = models.IntegerField(unique=True)
     channel_limit = models.IntegerField()
     channel_reset = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.channel_id}"
 
 class Usage(models.Model):
     user_id = models.IntegerField()
