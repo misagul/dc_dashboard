@@ -1,7 +1,16 @@
-{% extends "master.html" %}
+{% extends "master.html" %} {% block content %}
 
-{% block content %}
-<div class="relative overflow-x-auto px-10 py-7">
+<div class="justify-center flex">
+    <button
+        id="cookie-add-btn"
+        type="button"
+        class="text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
+    >
+        Add New
+    </button>
+</div>
+
+<div id="main-cookies-table" class="relative overflow-x-auto px-10 py-7">
     {% if cookies %}
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
@@ -10,28 +19,32 @@
                 <th scope="col" class="px-6 py-3">date</th>
                 <th scope="col" class="px-6 py-3">count</th>
                 <th scope="col" class="px-6 py-3">status</th>
-                <th scope="col" class="px-6 py-3">delete</th>
+                <th scope="col" class="px-6 py-3">edit</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="main-tbody">
             {% for cookie in cookies %}
             <tr
+                id="cookie-{{ cookie.pk }}"
                 class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
             >
-                <td class="px-6 py-4">{{ cookie.name }}</td>
-                <td class="px-6 py-4">{{ cookie.date }}</td>
-                <td class="px-6 py-4">{{ cookie.count }}</td>
+                <td class="px-6 py-4">{{ cookie.cookie_name }}</td>
+                <td class="px-6 py-4">{{ cookie.cookie_date }}</td>
+                <td class="px-6 py-4">{{ cookie.cookie_count }}</td>
                 <td class="px-6 py-4">
-                    {% if cookie.status %}
+                    {% if cookie.cookie_status %}
                     <span style="color: green">●</span> Active {% else %}
                     <span style="color: red">●</span> Deactive {% endif %}
                 </td>
                 <td scope="col" class="px-6 py-3">
-                    <a
-                        href="#"
-                        class="font-medium text-blue-500 hover:underline"
-                        >Delete</a
+                    <button
+                        data-cookie-pk="{{ cookie.pk }}"
+                        data-cookie-name="{{ cookie.cookie_name }}"
+                        type="button"
+                        class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
                     >
+                        Edit
+                    </button>
                 </td>
             </tr>
             {% endfor %}
@@ -41,5 +54,318 @@
     <p class="text-white">No cookies are available.</p>
     {% endif %}
 </div>
+
+<div id="add-cookie-form-div" class="justify-center px-10 py-7 hidden">
+    <form
+        class="w-96 bg-gray-800 p-10 rounded-xl shadow-[0_35px_60px_-15px_rgba(50,50,50,0.9)]"
+    >
+        <div class="mb-6">
+            <label
+                for="cookie-name"
+                class="block mb-2 text-sm font-medium text-white"
+                >Cookie Name</label
+            >
+            <input
+                type="text"
+                id="cookie-name"
+                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
+        <div class="mb-6">
+            <label
+                for="cookie-text"
+                class="block mb-2 text-sm font-medium text-white"
+                >Cookie</label
+            >
+            <textarea
+                type="text"
+                id="cookie-text"
+                class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            ></textarea>
+        </div>
+        <button
+            id="add-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+        >
+            Add
+        </button>
+        <div
+            class="ch-add-success mt-3 text-sm text-green-400 hidden"
+            role="alert"
+        >
+            <span class="font-medium">Cookie added.</span>
+        </div>
+
+        <div class="ch-add-error mt-3 text-sm text-red-400 hidden" role="alert">
+            <span class="font-medium">Error...</span>
+        </div>
+    </form>
+</div>
+
+<div id="update-cookie-form-div" class="justify-center px-10 py-7 hidden">
+    <form
+        class="w-96 bg-gray-800 p-10 rounded-xl shadow-[0_35px_60px_-15px_rgba(50,50,50,0.9)]"
+    >
+        <div class="mb-6">
+            <div class="mb-6">
+                <label
+                    for="update-cookie-name"
+                    class="block mb-2 text-sm font-medium text-white"
+                    >Cookie Name</label
+                >
+                <input
+                    type="text"
+                    id="update-cookie-name"
+                    class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                    required
+                />
+            </div>
+            <label
+                for="update-cookie-text"
+                class="block mb-2 text-sm font-medium text-white"
+                >Cookie
+            </label>
+
+            <textarea
+                type="text"
+                id="update-cookie-text"
+                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            ></textarea>
+        </div>
+
+        <button
+            id="update-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+        >
+            Update
+        </button>
+
+        <button
+            id="delete-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-900"
+        >
+            Delete
+        </button>
+
+        <div
+            class="ch-update-success mt-3 text-sm text-green-400 hidden"
+            role="alert"
+        >
+            <span class="font-medium">Done.</span>
+        </div>
+
+        <div
+            class="ch-update-error mt-3 text-sm text-red-400 hidden"
+            role="alert"
+        >
+            <span class="font-medium">Error...</span>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var data_cookie_pk = "0";
+
+    function successErrorAlert(isSuccess, isAdd) {
+        if (isAdd) {
+            if (isSuccess) {
+                $(".ch-add-success").show();
+                $(".ch-add-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-add-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-add-success").hide();
+                $(".ch-add-error").show();
+                setTimeout(() => {
+                    $(".ch-add-error").hide();
+                }, 3000);
+            }
+        } else {
+            if (isSuccess) {
+                $(".ch-update-success").show();
+                $(".ch-update-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-update-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-update-success").hide();
+                $(".ch-update-error").show();
+                setTimeout(() => {
+                    $(".ch-update-error").hide();
+                }, 3000);
+            }
+        }
+    }
+
+    $(document).on("click", ".edit-btn", function (e) {
+        data_cookie_pk = $(this).attr("data-cookie-pk");
+
+        var cookieBtn = document.getElementById("cookie-add-btn");
+        var data_cookie_name = $(this).attr("data-cookie-name");
+
+        $("#update-cookie-name").val(data_cookie_name);
+        $("#update-cookie-text").val();
+
+        document.getElementById("main-cookies-table").style.display = "none";
+        document.getElementById("update-cookie-form-div").style.display =
+            "flex";
+
+        if (cookieBtn.textContent == "Go Back") {
+            cookieBtn.textContent = "Add New";
+        } else {
+            cookieBtn.textContent = "Go Back";
+        }
+    });
+
+    $("#update-btn").click(function (e) {
+        var new_cookie_name = $("#update-cookie-name").val();
+        var new_cookie_text = $("#update-cookie-text").val();
+
+        if (new_cookie_name.length != 0 && new_cookie_text.length != 0) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'api:update_cookie' %}",
+                data: {
+                    cookie_pk: data_cookie_pk,
+                    cookie_name: $("#update-cookie-name").val(),
+                    cookie_text: $("#update-cookie-text").val(),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                datatype: "json",
+                success: function (data) {
+                    console.log(`cookie ${new_cookie_name} updated.`);
+
+                    successErrorAlert(true, false);
+                },
+                error: function (error) {
+                    console.log(error);
+                    successErrorAlert(false, false);
+                },
+            });
+            return false;
+        }
+    });
+
+    $("#delete-btn").click(function (e) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:delete_cookie' %}",
+            data: {
+                cookie_pk: data_cookie_pk,
+
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(`cookie ${data} deleted.`);
+
+                successErrorAlert(true, false);
+            },
+            error: function (error) {
+                console.log(error);
+
+                successErrorAlert(false, false);
+            },
+        });
+        return false;
+    });
+
+    $("#add-btn").click(function (e) {
+        if ($("#cookie-text").val().length != 0) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'api:add_cookie' %}",
+                data: {
+                    cookie_name: $("#cookie-name").val(),
+                    cookie_text: $("#cookie-text").val(),
+
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                datatype: "json",
+                success: function (data) {
+                    console.log(`cookie ${data} added.`);
+
+                    successErrorAlert(true, true);
+                    $("#cookie-name").val("");
+                    $("#cookie-text").val("");
+                },
+                error: function (error) {
+                    console.log(error);
+                    successErrorAlert(false, true);
+                },
+            });
+            return false;
+        } else {
+            successErrorAlert(false, true);
+        }
+    });
+
+    $("#cookie-add-btn").click(function (e) {
+        var mainTable = document.getElementById("main-cookies-table");
+        var cookieForm = document.getElementById("add-cookie-form-div");
+        var cookieBtn = document.getElementById("cookie-add-btn");
+
+        $("#update-cookie-text").val("");
+
+        if (mainTable.style.display != "none") {
+            mainTable.style.display = "none";
+            cookieForm.style.display = "flex";
+            cookieBtn.textContent = "Go Back";
+        } else {
+            mainTable.style.display = "block";
+            cookieForm.style.display = "none";
+            cookieBtn.textContent = "Add New";
+            $("#update-cookie-form-div").hide();
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'api:get_cookies' %}",
+                datatype: "json",
+
+                success: (data) => {
+                    console.log(data);
+                    new_tbody = '<tbody id="main-tbody">';
+                    var activeText = "";
+                    data.forEach((element) => {
+                        if (element.fields.cookie_status) {
+                            activeText =
+                                '<span style="color: green">●</span> Active';
+                        } else {
+                            activeText =
+                                '<span style="color: red">●</span>Deactive';
+                        }
+                        new_row = `<tr id="cookie-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
+                            <td class="px-6 py-4">${element.fields.cookie_name}</td> <td class="px-6 py-4">${element.fields.cookie_date}</td> \
+                            <td class="px-6 py-4">${element.fields.cookie_count}</td> \
+                            <td class="px-6 py-4">${activeText}</td>
+                            <td scope="col" class="px-6 py-3"> \
+                                <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
+                                    type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
+                            </td></tr>`;
+                        new_tbody += new_row;
+                    });
+
+                    new_tbody += "</tbody>";
+
+                    $("#main-tbody").replaceWith(new_tbody);
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+            });
+        }
+        return false;
+    });
+</script>
 
 {% endblock %}

@@ -2,10 +2,9 @@
 
 <div class="justify-center flex">
     <button
-        id="channel-btn"
+        id="channel-add-btn"
         type="button"
         class="text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
-        onclick="addNewButton()"
     >
         Add New
     </button>
@@ -32,14 +31,16 @@
                 <td class="px-6 py-4">{{ channel.channel_limit }}</td>
                 <td class="px-6 py-4">{{ channel.channel_reset }} hours</td>
                 <td scope="col" class="px-6 py-3">
-                    <a
-                        data-ch-pk="{{ channel.id }}"
+                    <button
+                        data-ch-pk="{{ channel.pk }}"
+                        data-ch-id="{{ channel.channel_id }}"
                         data-ch-limit="{{ channel.channel_limit }}"
-                        data-ch-reset="{{ channel.channel_reset}}"
-                        href="#"
-                        class="edit-btn font-medium text-blue-500 hover:underline"
-                        >Edit</a
+                        data-ch-reset="{{ channel.channel_reset }}"
+                        type="button"
+                        class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
                     >
+                        Edit
+                    </button>
                 </td>
             </tr>
             {% endfor %}
@@ -94,13 +95,13 @@
                 required
             />
         </div>
-<button
-                id="add-btn"
-                type="submit"
-                class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
-            >
-                Add
-            </button>
+        <button
+            id="add-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+        >
+            Add
+        </button>
         <div
             class="ch-add-success mt-3 text-sm text-green-400 hidden"
             role="alert"
@@ -159,22 +160,21 @@
             />
         </div>
 
-<button
-                id="update-btn"
-                type="submit"
-                class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
-            >
-                Update
-            </button>
+        <button
+            id="update-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+        >
+            Update
+        </button>
 
         <button
-                id="delete-btn"
-                type="submit"
-                class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-900"
-            >
-                Delete
-            </button>
-        
+            id="delete-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-900"
+        >
+            Delete
+        </button>
 
         <div
             class="ch-update-success mt-3 text-sm text-green-400 hidden"
@@ -194,36 +194,91 @@
 
 <script type="text/javascript">
     var data_ch_pk = "0";
-    $(".edit-btn").click(function (e) {
-        console.log("isa");
+
+    function successErrorAlert(isSuccess, isAdd) {
+        if (isAdd) {
+            if (isSuccess) {
+                $(".ch-add-success").show();
+                $(".ch-add-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-add-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-add-success").hide();
+                $(".ch-add-error").show();
+                setTimeout(() => {
+                    $(".ch-add-error").hide();
+                }, 3000);
+            }
+        } else {
+            if (isSuccess) {
+                $(".ch-update-success").show();
+                $(".ch-update-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-update-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-update-success").hide();
+                $(".ch-update-error").show();
+                setTimeout(() => {
+                    $(".ch-update-error").hide();
+                }, 3000);
+            }
+        }
+    }
+
+    $(document).on("click", ".edit-btn", function (e) {
+        data_ch_pk = $(this).attr("data-ch-pk");
+        var data_ch_id = $(this).attr("data-ch-id");
+        var data_ch_limit = $(this).attr("data-ch-limit");
+        var data_ch_reset = $(this).attr("data-ch-reset");
+
+        var channelBtn = document.getElementById("channel-add-btn");
+
+        console.log(data_ch_id, data_ch_limit, data_ch_reset);
         document.getElementById("main-channels-table").style.display = "none";
         document.getElementById("update-channel-form-div").style.display =
             "flex";
 
-        document.getElementById("channel-btn").textContent = "Go Back";
+        $("#update-channel-id").val(data_ch_id);
+        $("#update-channel-limit").val(data_ch_limit);
+        $("#update-channel-reset").val(data_ch_reset);
 
-        data_ch_pk = $(this).attr("data-ch-pk");
-        var data_ch_limit = $(this).attr("data-ch-limit");
-        var data_ch_reset = $(this).attr("data-ch-reset");
+        if (channelBtn.textContent == "Go Back") {
+            channelBtn.textContent = "Add New";
+        } else {
+            channelBtn.textContent = "Go Back";
+        }
+    });
 
-
-
-        // $("#update-btn").click(function (e) {
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{% url 'api:delete_channel' %}",
-        //         data: {
-        //             data_ch_pk: data_ch_pk,
-        //             data_ch_limit: data_ch_limit,
-        //             data_ch_reset: data_ch_reset,
-        //             csrfmiddlewaretoken: "{{ csrf_token }}",
-        //         },
-        //         datatype: "json",
-        //         success: function (data) {
-        //             console.log(data);
-        //         },
-        //     });
-        // });
+    $("#update-btn").click(function (e) {
+        var new_ch_id = $("#update-channel-id").val();
+        var new_ch_limit = $("#update-channel-limit").val();
+        var new_ch_reset = $("#update-channel-reset").val();
+        var channel_id = $("#update-channel-id").val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:update_channel' %}",
+            data: {
+                channel_pk: data_ch_pk,
+                channel_id: channel_id,
+                channel_limit: $("#update-channel-limit").val(),
+                channel_reset: $("#update-channel-reset").val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(`Channel ${channel_id} updated.`);
+                successErrorAlert(true, false);
+            },
+            error: function (error) {
+                console.log(error);
+                successErrorAlert(false, false);
+            },
+        });
+        return false;
     });
 
     $("#delete-btn").click(function (e) {
@@ -237,9 +292,25 @@
             },
             datatype: "json",
             success: function (data) {
-                console.log(data);
+                console.log(`Channel ${data} deleted.`);
+
+               
+                document.getElementById("main-channels-table").style.display = "none";
+        document.getElementById("update-channel-form-div").style.display =
+            "hidden";
+
+                $("#update-channel-id").val("");
+                $("#update-channel-limit").val("");
+                $("#update-channel-reset").val("");
+
+                successErrorAlert(true, false);
+            },
+            error: function (error) {
+                console.log(error);
+                successErrorAlert(false, false);
             },
         });
+        return false;
     });
 
     $("#add-btn").click(function (e) {
@@ -257,34 +328,27 @@
             success: function (data) {
                 console.log(`Channel ${data} added.`);
 
-                $(".ch-add-success").show();
-                $(".ch-add-error").hide();
+       
 
                 $("#channel-id").val("");
                 $("#channel-limit").val("");
                 $("#channel-reset").val("");
 
-                setTimeout(() => {
-                    $(".ch-add-success").hide();
-                }, 5000);
+                successErrorAlert(true, true);
             },
             error: function (error) {
                 console.log(error);
-                $(".ch-add-success").hide();
-                $(".ch-add-error").show();
-                setTimeout(() => {
-                    $(".ch-add-error").hide();
-                }, 5000);
+                successErrorAlert(true, true);
             },
         });
 
         return false;
     });
 
-    function addNewButton() {
+    $("#channel-add-btn").click(function (e) {
         var mainTable = document.getElementById("main-channels-table");
         var channelForm = document.getElementById("add-channel-form-div");
-        var channelBtn = document.getElementById("channel-btn");
+        var channelBtn = document.getElementById("channel-add-btn");
 
         if (mainTable.style.display != "none") {
             mainTable.style.display = "none";
@@ -306,7 +370,12 @@
                     new_tbody = '<tbody id="main-tbody">';
 
                     data.forEach((element) => {
-                        new_row = `<tr id="channel-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > <td class="px-6 py-4">${element.fields.channel_id}</td> <td class="px-6 py-4">${element.fields.channel_limit}</td> <td class="px-6 py-4">${element.fields.channel_reset} hours</td> <td scope="col" class="px-6 py-3"> <a data-ch-pk="${element.pk}" data-ch-limit="${element.fields.channel_limit}" data-ch-reset="${element.fields.channel_reset}" href="#" class="edit-btn font-medium text-blue-500 hover:underline">Edit</a></td></tr>`;
+                        new_row = `<tr id="channel-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
+                            <td class="px-6 py-4">${element.fields.channel_id}</td> <td class="px-6 py-4">${element.fields.channel_limit}</td> \
+                            <td class="px-6 py-4">${element.fields.channel_reset} hours</td> <td scope="col" class="px-6 py-3"> \
+                                <button data-ch-pk="${element.pk}" data-ch-id="${element.fields.channel_id}" data-ch-limit="${element.fields.channel_limit}" data-ch-reset="${element.fields.channel_reset}" \
+                                    type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
+                            </td></tr>`;
                         new_tbody += new_row;
                     });
 
@@ -320,7 +389,7 @@
             });
         }
         return false;
-    }
+    });
 </script>
 
 {% endblock %}
