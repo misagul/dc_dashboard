@@ -18,6 +18,7 @@
                 <th scope="col" class="px-6 py-3">channel_id</th>
                 <th scope="col" class="px-6 py-3">channel_limit</th>
                 <th scope="col" class="px-6 py-3">channel_reset</th>
+                <th scope="col" class="px-6 py-3">channel_next_reset</th>
                 <th scope="col" class="px-6 py-3">edit</th>
             </tr>
         </thead>
@@ -30,12 +31,14 @@
                 <td class="px-6 py-4">{{ channel.channel_id }}</td>
                 <td class="px-6 py-4">{{ channel.channel_limit }}</td>
                 <td class="px-6 py-4">{{ channel.channel_reset }} hours</td>
+                <td class="px-6 py-4">{{ channel.channel_next_reset }}</td>
                 <td scope="col" class="px-6 py-3">
                     <button
                         data-ch-pk="{{ channel.pk }}"
                         data-ch-id="{{ channel.channel_id }}"
                         data-ch-limit="{{ channel.channel_limit }}"
                         data-ch-reset="{{ channel.channel_reset }}"
+                        data-ch-next-reset="{{ channel.channel_next_reset }}"
                         type="button"
                         class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
                     >
@@ -294,10 +297,11 @@
             success: function (data) {
                 console.log(`Channel ${data} deleted.`);
 
-               
-                document.getElementById("main-channels-table").style.display = "none";
-        document.getElementById("update-channel-form-div").style.display =
-            "hidden";
+                document.getElementById("main-channels-table").style.display =
+                    "none";
+                document.getElementById(
+                    "update-channel-form-div"
+                ).style.display = "hidden";
 
                 $("#update-channel-id").val("");
                 $("#update-channel-limit").val("");
@@ -327,8 +331,6 @@
             datatype: "json",
             success: function (data) {
                 console.log(`Channel ${data} added.`);
-
-       
 
                 $("#channel-id").val("");
                 $("#channel-limit").val("");
@@ -372,9 +374,15 @@
                     data.forEach((element) => {
                         new_row = `<tr id="channel-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
                             <td class="px-6 py-4">${element.fields.channel_id}</td> <td class="px-6 py-4">${element.fields.channel_limit}</td> \
-                            <td class="px-6 py-4">${element.fields.channel_reset} hours</td> <td scope="col" class="px-6 py-3"> \
-                                <button data-ch-pk="${element.pk}" data-ch-id="${element.fields.channel_id}" data-ch-limit="${element.fields.channel_limit}" data-ch-reset="${element.fields.channel_reset}" \
-                                    type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
+                            <td class="px-6 py-4">${element.fields.channel_reset} hours</td> \
+                            <td class="px-6 py-4">${element.fields.channel_next_reset}</td> \
+                            <td scope="col" class="px-6 py-3"> \
+                                <button data-ch-pk="${element.pk}" data-ch-id="${element.fields.channel_id}" \
+                                    data-ch-limit="${element.fields.channel_limit}" \
+                                    data-ch-reset="${element.fields.channel_reset}" \
+                                    data-ch-next-reset="${element.fields.channel_next_reset}" \
+                                    type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit \
+                                </button> \
                             </td></tr>`;
                         new_tbody += new_row;
                     });

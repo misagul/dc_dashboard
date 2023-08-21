@@ -14,4 +14,8 @@ urlpatterns = [
     path("add_cookie/", views.add_cookie, name="add_cookie"),
     path("update_cookie/", views.update_cookie, name="update_cookie"),
     path("delete_cookie/", views.delete_cookie, name="delete_cookie"),
+
+    path("get_usages/", views.get_usages, name="get_usages"),
+    path("add_usage/", views.add_usage, name="add_usage"),
+    
 ]

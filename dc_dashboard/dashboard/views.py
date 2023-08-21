@@ -9,7 +9,7 @@ def home(request):
 
 def usages(request):
     context = {
-        'usages': Usage.objects.all().order_by('user_id')
+        'usages': Usage.objects.all().order_by('usage_user_id')
     }
     return render(request, "usages.html", context)
 

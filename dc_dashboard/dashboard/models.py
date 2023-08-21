@@ -12,11 +12,11 @@ class Channel(models.Model):
     channel_id = models.IntegerField(unique=True)
     channel_limit = models.IntegerField()
     channel_reset = models.IntegerField()
+    channel_next_reset = models.CharField(default=datetime.now().strftime("%d.%m.%Y %H:%M:%S"), max_length=255)
 
 class Usage(models.Model):
-    user_id = models.IntegerField()
-    channel_id = models.IntegerField()
-    usage = models.IntegerField()
+    usage_user_id = models.IntegerField()
+    usage_channel_id = models.IntegerField()
+    usage_count = models.IntegerField()
 
-    def __str__(self):
-        return f"{self.user_id}"
+
