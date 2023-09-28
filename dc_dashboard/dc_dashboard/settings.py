@@ -140,6 +140,6 @@ INTERNAL_IPS = [
 
 ALLOWED_HOSTS = ['*']
 
-NPM_BIN_PATH = r"C:\Users\bt.staj2\Downloads\node-v20.5.1-win-x64\node-v20.5.1-win-x64\npm.cmd"
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 LOGIN_URL = '/login'

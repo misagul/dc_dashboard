@@ -31,9 +31,9 @@
                 type="number"
                 id="default-search"
                 class="block w-full p-4 pl-10 text-sm border rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Search with user id..."
+                placeholder="Search with user id"
                 required
-            >
+            />
             <button
                 type="submit"
                 class="search-btn text-white absolute right-2.5 mr-24 bottom-2.5 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
@@ -46,19 +46,17 @@
             >
                 Show All
             </button>
-        </input>
         </div>
     </form>
 </div>
 
 <div class="relative overflow-x-auto px-10 py-7">
-    {% if usages %}
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
             <tr>
                 <th scope="col" class="px-6 py-3">user_id</th>
                 <th scope="col" class="px-6 py-3">channel_id</th>
-                <th scope="col" class="px-6 py-3">usage</th>
+                <th scope="col" class="px-6 py-3">usage_left</th>
             </tr>
         </thead>
         <tbody id="main-tbody">
@@ -68,14 +66,11 @@
             >
                 <td class="px-6 py-4">{{ usage.usage_user_id }}</td>
                 <td class="px-6 py-4">{{ usage.usage_channel_id }}</td>
-                <td class="px-6 py-4">{{ usage.usage_count }}</td>
+                <td class="px-6 py-4">{{ usage.usage_left }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <p class="text-white">No usages are available.</p>
-    {% endif %}
 </div>
 <script>
     /*
@@ -96,7 +91,7 @@
                         new_row = `<tr class="usage-row usage-row-${element.fields.usage_user_id} border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"> \
                                     <td class="px-6 py-4">${element.fields.usage_user_id}</td> \
                                     <td class="px-6 py-4">${element.fields.usage_channel_id}</td> \
-                                    <td class="px-6 py-4">${element.fields.usage_count}</td> \
+                                    <td class="px-6 py-4">${element.fields.usage_left}</td> \
                                     </tr> `;
                         new_tbody += new_row;
                     });
@@ -108,6 +103,18 @@
             });
         }, 5000);
         return false
+    });
+
+    */
+
+    /*
+    
+    $(document).on('keyup', '#default-search', function(e){
+        var user_id = $("#default-search").val();
+        $(".usage-row").hide();
+        $(`.usage-row-${user_id}`).show();
+        console.log(user_id);
+        return false;
     });
 
     */
@@ -124,7 +131,6 @@
         $(".usage-row").show();
         return false;
     });
-
 </script>
 
 {% endblock %}

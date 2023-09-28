@@ -11,7 +11,6 @@
 </div>
 
 <div id="main-channels-table" class="relative overflow-x-auto px-10 py-7">
-    {% if channels %}
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
             <tr>
@@ -49,9 +48,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <p class="text-white">No channels are available.</p>
-    {% endif %}
 </div>
 
 <div id="add-channel-form-div" class="justify-center px-10 py-7 hidden">

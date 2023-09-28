@@ -11,8 +11,7 @@
 </div>
 
 <div id="main-cookies-table" class="relative overflow-x-auto px-10 py-7">
-    {% if cookies %}
-    <table class="w-full text-sm text-left text-gray-500">
+    <table class="w-full text-sm text-left text-gray-500 table-fixed">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
             <tr>
                 <th scope="col" class="px-6 py-3">name</th>
@@ -20,6 +19,7 @@
                 <th scope="col" class="px-6 py-3">count</th>
                 <th scope="col" class="px-6 py-3">status</th>
                 <th scope="col" class="px-6 py-3">edit</th>
+                <th scope="col" class="px-6 py-3">delete</th>
             </tr>
         </thead>
         <tbody id="main-tbody">
@@ -46,13 +46,21 @@
                         Edit
                     </button>
                 </td>
+
+                <td>
+                    <button
+                        data-cookie-pk="{{ cookie.pk }}"
+                        data-cookie-name="{{ cookie.cookie_name }}"
+                        type="button"
+                        class="delete-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-800"
+                    >
+                        Delete
+                    </button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <p class="text-white">No cookies are available.</p>
-    {% endif %}
 </div>
 
 <div id="add-cookie-form-div" class="justify-center px-10 py-7 hidden">
@@ -144,14 +152,6 @@
             class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
         >
             Update
-        </button>
-
-        <button
-            id="delete-btn"
-            type="submit"
-            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-900"
-        >
-            Delete
         </button>
 
         <div
@@ -256,7 +256,9 @@
         }
     });
 
-    $("#delete-btn").click(function (e) {
+    $(document).on("click", ".delete-btn", function (e) {
+        data_cookie_pk = $(this).attr("data-cookie-pk");
+        $(`#cookie-${data_cookie_pk}`).hide();
         $.ajax({
             type: "POST",
             url: "{% url 'api:delete_cookie' %}",
@@ -268,7 +270,6 @@
             datatype: "json",
             success: function (data) {
                 console.log(`cookie ${data} deleted.`);
-
                 successErrorAlert(true, false);
             },
             error: function (error) {
@@ -344,14 +345,20 @@
                             activeText =
                                 '<span style="color: red">●</span>Deactive';
                         }
-                        new_row = `<tr id="cookie-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
-                            <td class="px-6 py-4">${element.fields.cookie_name}</td> <td class="px-6 py-4">${element.fields.cookie_date}</td> \
-                            <td class="px-6 py-4">${element.fields.cookie_count}</td> \
-                            <td class="px-6 py-4">${activeText}</td>
-                            <td scope="col" class="px-6 py-3"> \
-                                <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
-                                    type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
-                            </td></tr>`;
+                        new_row = ` \
+                            <tr id="cookie-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
+                                <td class="px-6 py-4">${element.fields.cookie_name}</td> <td class="px-6 py-4">${element.fields.cookie_date}</td> \
+                                <td class="px-6 py-4">${element.fields.cookie_count}</td> \
+                                <td class="px-6 py-4">${activeText}</td> \
+                                <td scope="col" class="px-6 py-3"> \
+                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
+                                        type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
+                                </td> \
+                                <td> \
+                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
+                                        type="button" class="delete-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-800">Delete</button> \
+                                </td> \
+                            </tr>`;
                         new_tbody += new_row;
                     });
 
