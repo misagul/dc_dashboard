@@ -17,6 +17,7 @@
                 <th scope="col" class="px-6 py-3">name</th>
                 <th scope="col" class="px-6 py-3">date</th>
                 <th scope="col" class="px-6 py-3">count</th>
+                <th scope="col" class="px-6 py-3">limit</th>
                 <th scope="col" class="px-6 py-3">status</th>
                 <th scope="col" class="px-6 py-3">edit</th>
                 <th scope="col" class="px-6 py-3">delete</th>
@@ -31,6 +32,7 @@
                 <td class="px-6 py-4">{{ cookie.cookie_name }}</td>
                 <td class="px-6 py-4">{{ cookie.cookie_date }}</td>
                 <td class="px-6 py-4">{{ cookie.cookie_count }}</td>
+                <td class="px-6 py-4">{{ cookie.cookie_limit }}</td>
                 <td class="px-6 py-4">
                     {% if cookie.cookie_status %}
                     <span style="color: green">●</span> Active {% else %}
@@ -40,6 +42,7 @@
                     <button
                         data-cookie-pk="{{ cookie.pk }}"
                         data-cookie-name="{{ cookie.cookie_name }}"
+                        data-cookie-limit="{{ cookie.cookie_limit }}"
                         type="button"
                         class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
                     >
@@ -51,6 +54,7 @@
                     <button
                         data-cookie-pk="{{ cookie.pk }}"
                         data-cookie-name="{{ cookie.cookie_name }}"
+                        data-cookie-limit="{{ cookie.cookie_limit }}"
                         type="button"
                         class="delete-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-800"
                     >
@@ -94,6 +98,21 @@
                 required
             ></textarea>
         </div>
+
+        <div class="mb-6">
+            <label
+                for="cookie-limit"
+                class="block mb-2 text-sm font-medium text-white"
+                >Cookie Limit</label
+            >
+            <input
+                type="number"
+                id="cookie-limit"
+                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
         <button
             id="add-btn"
             type="submit"
@@ -132,18 +151,20 @@
                     required
                 />
             </div>
-            <label
-                for="update-cookie-text"
-                class="block mb-2 text-sm font-medium text-white"
-                >Cookie
-            </label>
 
-            <textarea
-                type="text"
-                id="update-cookie-text"
-                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
-                required
-            ></textarea>
+            <div class="mb-6">
+                <label
+                    for="update-cookie-limit"
+                    class="block mb-2 text-sm font-medium text-white"
+                    >Cookie Limit</label
+                >
+                <input
+                    type="number"
+                    id="update-cookie-limit"
+                    class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                    required
+                />
+            </div>
         </div>
 
         <button
@@ -212,9 +233,10 @@
 
         var cookieBtn = document.getElementById("cookie-add-btn");
         var data_cookie_name = $(this).attr("data-cookie-name");
+        var data_cookie_limit = $(this).attr("data-cookie-limit");
 
         $("#update-cookie-name").val(data_cookie_name);
-        $("#update-cookie-text").val();
+        $("#update-cookie-limit").val(data_cookie_limit);
 
         document.getElementById("main-cookies-table").style.display = "none";
         document.getElementById("update-cookie-form-div").style.display =
@@ -229,9 +251,9 @@
 
     $("#update-btn").click(function (e) {
         var new_cookie_name = $("#update-cookie-name").val();
-        var new_cookie_text = $("#update-cookie-text").val();
+        var new_cookie_limit = $("#update-cookie-limit").val();
 
-        if (new_cookie_name.length != 0 && new_cookie_text.length != 0) {
+        if (new_cookie_name.length != 0 && new_cookie_limit.length != 0) {
             $.ajax({
                 type: "POST",
                 url: "{% url 'api:update_cookie' %}",
@@ -239,6 +261,7 @@
                     cookie_pk: data_cookie_pk,
                     cookie_name: $("#update-cookie-name").val(),
                     cookie_text: $("#update-cookie-text").val(),
+                    cookie_limit: $("#update-cookie-limit").val(),
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                 },
                 datatype: "json",
@@ -289,7 +312,7 @@
                 data: {
                     cookie_name: $("#cookie-name").val(),
                     cookie_text: $("#cookie-text").val(),
-
+                    cookie_limit: $("#cookie-limit").val(),
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                 },
                 datatype: "json",
@@ -349,13 +372,14 @@
                             <tr id="cookie-${element.pk}" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300" > \
                                 <td class="px-6 py-4">${element.fields.cookie_name}</td> <td class="px-6 py-4">${element.fields.cookie_date}</td> \
                                 <td class="px-6 py-4">${element.fields.cookie_count}</td> \
+                                <td class="px-6 py-4">${element.fields.cookie_limit}</td> \
                                 <td class="px-6 py-4">${activeText}</td> \
                                 <td scope="col" class="px-6 py-3"> \
-                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
+                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" data-cookie-limit="${element.fields.cookie_limit}" \
                                         type="button" class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Edit</button> \
                                 </td> \
                                 <td> \
-                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" \
+                                    <button data-cookie-pk="${element.pk}" data-cookie-name="${element.fields.cookie_name}" data-cookie-limit="${element.fields.cookie_limit}" \
                                         type="button" class="delete-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-800">Delete</button> \
                                 </td> \
                             </tr>`;

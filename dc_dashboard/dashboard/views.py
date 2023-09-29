@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import Cookie, Channel, Usage
+from .models import Cookie, Channel, Member
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -7,11 +7,11 @@ from django.contrib.auth import login, logout, authenticate
 def home(request):
     return render(request, "home.html")
 
-def usages(request):
+def members(request):
     context = {
-        'usages': Usage.objects.all().order_by('usage_user_id')
+        'members': Member.objects.all().order_by('member_user_id')
     }
-    return render(request, "usages.html", context)
+    return render(request, "members.html", context)
 
 def cookies(request):
     context = {

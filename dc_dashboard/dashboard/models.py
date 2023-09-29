@@ -16,9 +16,9 @@ class Channel(models.Model):
     channel_reset = models.IntegerField()
     channel_next_reset = models.CharField(max_length=255)
 
-class Usage(models.Model):
-    usage_user_id = models.IntegerField()
-    usage_channel_id = models.IntegerField()
-    usage_left = models.IntegerField()
+class Member(models.Model):
+    member_user_id = models.IntegerField()
+    member_channel_id = models.IntegerField()
+    member_usage_left = models.IntegerField()
 
 

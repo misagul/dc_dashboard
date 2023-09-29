@@ -8,9 +8,12 @@ data = {
 data = {
     'channel_id': 1
 }
-print(data)
-url = "http://127.0.0.1:8000/api/get_cookie/"
 
-res = requests.post(url)
+url = "http://127.0.0.1:8000/api/get_channels/"
 
-print(res.text)
+res = requests.get(url)
+
+r = res.json()
+
+for i in r:
+    print(i['fields']['channel_id'])

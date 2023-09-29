@@ -1,11 +1,11 @@
 from django.http import HttpResponse, JsonResponse
-from dashboard.models import Cookie, Channel, Usage
+from dashboard.models import Cookie, Channel, Member
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import threading
 from datetime import datetime, timedelta
 
-def reset_usages():
+def reset_members():
     channels = Channel.objects.all()
     for channel in channels:
 
@@ -16,66 +16,66 @@ def reset_usages():
             channel.channel_next_reset = (datetime.now() + timedelta(hours=channel.channel_reset)).strftime("%d.%m.%Y %H:%M:%S")
             channel.save()
             
-            Usage.objects.filter(usage_channel_id=channel.channel_id).update(usage_left=channel.channel_limit)                
+            Member.objects.filter(member_channel_id=channel.channel_id).update(member_usage_left=channel.channel_limit)                
             
-    threading.Timer(60, reset_usages).start()
+    threading.Timer(60, reset_members).start()
 
-# reset_usages()
+# reset_members()
 
-def get_usages(request):
-    usages = serializers.serialize("json", Usage.objects.all().order_by('usage_user_id'))
-    return HttpResponse(usages, content_type="application/json")
+def get_members(request):
+    members = serializers.serialize("json", Member.objects.all().order_by('member_user_id'))
+    return HttpResponse(members, content_type="application/json")
 
 @csrf_exempt
-def get_usage(request):
+def get_member(request):
     if request.method == 'POST':
-        usage_user_id = request.POST['usage_user_id']
-        usage_channel_id = request.POST['usage_channel_id']
+        member_user_id = request.POST['member_user_id']
+        member_channel_id = request.POST['member_channel_id']
         try:
-            usage = Usage.objects.get(usage_user_id=usage_user_id, usage_channel_id=usage_channel_id)
+            member = Member.objects.get(member_user_id=member_user_id, member_channel_id=member_channel_id)
         except:
-            usage = None
+            member = None
         
-        if usage:
-            return HttpResponse(usage.usage_left)
+        if member:
+            return HttpResponse(member.member_usage_left)
         
         return HttpResponse(-1)
             
 @csrf_exempt
 def add_usage(request):
 
-    # 0: usage object exist, usage_left 0
-    # 1: usage object exist, usage count not 0
-    # 2: usage object not exist, new user object created
-    # 3: usage object not exist, channel not exist
+    # 0: member object exist, usage_ 0
+    # 1: member object exist, member count not 0
+    # 2: member object not exist, new user object created
+    # 3: member object not exist, channel not exist
 
     if request.method == 'POST':
-        usage_user_id = request.POST['usage_user_id']
-        usage_channel_id = request.POST['usage_channel_id']
+        member_user_id = request.POST['member_user_id']
+        member_channel_id = request.POST['member_channel_id']
         try:
-            usage = Usage.objects.get(usage_user_id=usage_user_id, usage_channel_id=usage_channel_id)
+            member = Member.objects.get(member_user_id=member_user_id, member_channel_id=member_channel_id)
         except:
-            usage = None
+            member = None
         
-        if usage:
-            if usage.usage_left != 0:
-                usage.usage_left -= 1
-                usage.save()
+        if member:
+            if member.member_usage_left != 0:
+                member.member_usage_left -= 1
+                member.save()
                 
-                return HttpResponse("0, usage object exist, usage count not 1")
-            return HttpResponse("1, usage object exist, usage_left 0")
+                return HttpResponse("0, member object exist, member count not 1")
+            return HttpResponse("1, member object exist, usage_left 0")
 
         else:
             try:
-                channel = Channel.objects.get(channel_id=usage_channel_id)
+                channel = Channel.objects.get(channel_id=member_channel_id)
             except:
-                return HttpResponse("3, usage object not exist, channel not exist")
+                return HttpResponse("3, member object not exist, channel not exist")
             
-            new_usage = Usage(usage_user_id=usage_user_id, usage_channel_id=usage_channel_id, usage_left=channel.channel_limit)
-            new_usage.save()
-            return HttpResponse("2, usage object not exist, new user object created")
+            new_member = member(member_user_id=member_user_id, member_channel_id=member_channel_id, member_usage_left=channel.channel_limit)
+            new_member.save()
+            return HttpResponse("2, member object not exist, new user object created")
 
-
+@csrf_exempt
 def get_channels(request):
     data = serializers.serialize("json", Channel.objects.all())
     return HttpResponse(data, content_type="application/json")
@@ -98,7 +98,7 @@ def add_channel(request):
         channel_id = request.POST['channel_id']
         channel_limit = request.POST['channel_limit']
         channel_reset = request.POST['channel_reset']
-        channel_next_reset =  (datetime.now() + timedelta(hours=channel_reset)).strftime("%d.%m.%Y %H:%M:%S")
+        channel_next_reset =  (datetime.now() + timedelta(hours=int(channel_reset))).strftime("%d.%m.%Y %H:%M:%S")
         new_channel = Channel(channel_id=channel_id, channel_limit=channel_limit, channel_reset=channel_reset, channel_next_reset=channel_next_reset)
         new_channel.save()
         return HttpResponse(new_channel)
@@ -140,9 +140,11 @@ def get_current_cookie(request):
         next_cookie.cookie_is_current = True
         current_cookie.save()
         next_cookie.save()
-        return HttpResponse(next_cookie)
-    print(current_cookie.pk)
-    return HttpResponse(current_cookie)
+        data = serializers.serialize("json", [next_cookie])
+        return HttpResponse(data, content_type="application/json")
+
+    data = serializers.serialize("json", [current_cookie])
+    return HttpResponse(data, content_type="application/json")
     
 
 @csrf_exempt
