@@ -139,6 +139,8 @@ INTERNAL_IPS = [
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://6fc2-93-177-102-23.ngrok-free.app']
+
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 LOGIN_URL = '/login'
