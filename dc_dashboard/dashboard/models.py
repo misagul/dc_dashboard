@@ -8,7 +8,7 @@ class Cookie(models.Model):
     cookie_count = models.IntegerField(default=0)
     cookie_limit = models.IntegerField(default=20)
     cookie_status = models.BooleanField(default=True)
-    cookie_is_current = models.BooleanField()
+    cookie_is_current = models.BooleanField(default=False)
 
 class Channel(models.Model):
     channel_id = models.IntegerField(unique=True)

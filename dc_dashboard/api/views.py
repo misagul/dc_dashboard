@@ -14,7 +14,7 @@ def reset_usages():
         print(now, reset_date)
         if now > reset_date:
             print(channel.channel_id)
-            channel.channel_next_reset = (datetime.now() + timedelta(minutes=channel.channel_reset)).strftime("%d.%m.%Y %H:%M:%S")
+            channel.channel_next_reset = (datetime.now() + timedelta(hours=channel.channel_reset)).strftime("%d.%m.%Y %H:%M:%S")
             channel.save()
             
             Member.objects.filter(member_channel_id=channel.channel_id).update(member_usage_left=channel.channel_limit)                
@@ -97,7 +97,7 @@ def add_channel(request):
         channel_id = request.POST['channel_id']
         channel_limit = request.POST['channel_limit']
         channel_reset = request.POST['channel_reset']
-        channel_next_reset =  (datetime.now() + timedelta(minutes=int(channel_reset))).strftime("%d.%m.%Y %H:%M:%S")
+        channel_next_reset =  (datetime.now() + timedelta(hours=int(channel_reset))).strftime("%d.%m.%Y %H:%M:%S")
         new_channel = Channel(channel_id=channel_id, channel_limit=channel_limit, channel_reset=channel_reset, channel_next_reset=channel_next_reset)
         new_channel.save()
         return HttpResponse(new_channel)
@@ -129,7 +129,10 @@ def delete_channel(request):
 
 @csrf_exempt
 def get_current_cookie(request):
-    current_cookie = Cookie.objects.get(cookie_is_current=True)
+    try:
+        current_cookie = Cookie.objects.get(cookie_is_current=True)
+    except:
+        current_cookie = Cookie.objects.filter(cookie_status=True).order_by('pk').first()
     if current_cookie.cookie_count > current_cookie.cookie_limit:
         next_cookie = Cookie.objects.filter(pk__gt = current_cookie.pk, cookie_status=True).order_by('pk').first()
         if next_cookie == None:
@@ -149,6 +152,15 @@ def get_current_cookie(request):
     return HttpResponse(data, content_type="application/json")
 
 @csrf_exempt
+def update_cookie_status(request):
+    if request.method == 'POST':
+        cookie_pk = request.POST['cookie_pk']
+        cookie_status = request.POST['cookie_status']
+        cookie = Cookie.objects.get(pk=cookie_pk)
+        cookie.cookie_status = cookie_status
+        cookie.save()
+
+@csrf_exempt
 def add_cookie_usage(request):
     if request.method == 'POST':
         cookie_pk = request.POST['cookie_pk']
@@ -166,8 +178,9 @@ def add_cookie(request):
     if request.method == 'POST':
         cookie_name = request.POST['cookie_name']
         cookie_text = request.POST['cookie_text']
+        cookie_limit = request.POST['cookie_limit']
         cookie_date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-        new_cookie = Cookie(cookie_name=cookie_name, cookie_text=cookie_text, cookie_date=cookie_date)
+        new_cookie = Cookie(cookie_name=cookie_name, cookie_text=cookie_text, cookie_date=cookie_date, cookie_limit=cookie_limit)
         new_cookie.save()
         return HttpResponse(new_cookie.cookie_name)
 
@@ -175,13 +188,13 @@ def update_cookie(request):
     if request.method == 'POST':
         cookie_pk = request.POST['cookie_pk']
         cookie_name = request.POST['cookie_name']
-        cookie_text = request.POST['cookie_text']
+        cookie_limit = request.POST['cookie_limit']
 
         cookie = Cookie.objects.get(pk=cookie_pk)
         cookie.cookie_name = cookie_name
-        cookie.cookie_text = cookie_text
+        cookie.cookie_limit = cookie_limit
         cookie.save()
-        
+
         data = serializers.serialize("json", [cookie])
         return HttpResponse(data, content_type="application/json")
 
