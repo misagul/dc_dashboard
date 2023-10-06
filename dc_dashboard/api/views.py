@@ -17,14 +17,38 @@ def reset_usages():
             channel.channel_next_reset = (datetime.now() + timedelta(hours=channel.channel_reset)).strftime("%d.%m.%Y %H:%M:%S")
             channel.save()
             
-            Member.objects.filter(member_channel_id=channel.channel_id).update(member_usage_left=channel.channel_limit)                
-    threading.Timer(3600, reset_usages).start()
+            # Member.objects.filter(member_channel_id=channel.channel_id).update(member_usage_left=channel.channel_limit)
+            
+            Member.objects.filter(member_channel_id=channel.channel_id).delete()
+
+    threading.Timer(600, reset_usages).start()
     
-# reset_usages()
+reset_usages()
 
 def get_members(request):
     members = serializers.serialize("json", Member.objects.all().order_by('member_user_id'))
     return HttpResponse(members, content_type="application/json")
+
+def update_member(request):
+    if request.method == 'POST':
+        mem_pk =  request.POST['mem_pk']
+        mem_user_id =  request.POST['mem_user_id']
+        mem_ch_id =  request.POST['mem_ch_id']
+        new_mem_usage_left =  request.POST['new_mem_usage_left']
+        
+        member = Member.objects.get(pk=mem_pk)
+        member.member_user_id = mem_user_id
+        member.member_channel_id = mem_ch_id
+        member.member_usage_left = new_mem_usage_left
+        member.save()
+        return HttpResponse(member.member_user_id)
+
+def delete_member(request):
+    if request.method == 'POST':
+        mem_pk =  request.POST['mem_pk']
+        member = Member.objects.get(pk=mem_pk)
+        member.delete()
+        return HttpResponse(member.member_user_id)
 
 @csrf_exempt
 def get_member_usage(request):

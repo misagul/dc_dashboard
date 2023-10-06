@@ -20,6 +20,8 @@ urlpatterns = [
     path("delete_cookie/", views.delete_cookie, name="delete_cookie"),
 
     path("get_members/", views.get_members, name="get_members"),
+    path("update_member/", views.update_member, name="update_member"),
+    path("delete_member/", views.delete_member, name="delete_member"),
     path("get_member_usage/", views.get_member_usage, name="get_member_usage"),
     path("add_member_usage/", views.add_member_usage, name="add_member_usage"),
     

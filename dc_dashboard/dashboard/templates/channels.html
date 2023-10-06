@@ -24,7 +24,7 @@
         <tbody id="main-tbody">
             {% for channel in channels %}
             <tr
-                id="channel-{{ channel.id}}"
+                id="channel-{{ channel.pk}}"
                 class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
             >
                 <td class="px-6 py-4">{{ channel.channel_id }}</td>
@@ -294,10 +294,13 @@
                 console.log(`Channel ${data} deleted.`);
 
                 document.getElementById("main-channels-table").style.display =
-                    "none";
+                    "flex";
                 document.getElementById(
                     "update-channel-form-div"
-                ).style.display = "hidden";
+                ).style.display = "none";
+
+                document.getElementById(`channel-${data_ch_pk}`).style.display =
+                    "none";
 
                 $("#update-channel-id").val("");
                 $("#update-channel-limit").val("");

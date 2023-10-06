@@ -1,6 +1,6 @@
 {% extends "master.html" %} {% block content %}
 
-<div class="relative overflow-x-auto px-10 py-7">
+<div id="search-box" class="relative overflow-x-auto px-10 py-7">
     <form>
         <label
             for="default-search"
@@ -50,29 +50,133 @@
     </form>
 </div>
 
-<div class="relative overflow-x-auto px-10 py-7">
+<div id="main-members-table" class="relative overflow-x-auto px-10 py-7">
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-md text-gray-300 uppercase bg-gray-700">
             <tr>
                 <th scope="col" class="px-6 py-3">user_id</th>
                 <th scope="col" class="px-6 py-3">channel_id</th>
                 <th scope="col" class="px-6 py-3">usage_left</th>
+                <th scope="col" class="px-6 py-3">edit</th>
             </tr>
         </thead>
         <tbody id="main-tbody">
             {% for member in members %}
             <tr
+                id="member-row-{{ member.pk }}"
                 class="member-row member-row-{{ member.member_user_id }} border-b bg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-300"
             >
                 <td class="px-6 py-4">{{ member.member_user_id }}</td>
                 <td class="px-6 py-4">{{ member.member_channel_id }}</td>
                 <td class="px-6 py-4">{{ member.member_usage_left }}</td>
+                <td scope="col" class="px-6 py-3">
+                    <button
+                        data-mem-pk="{{ member.pk }}"
+                        data-mem-id="{{ member.member_user_id }}"
+                        data-mem-ch-id="{{ member.member_channel_id }}"
+                        data-mem-usage-left="{{ member.member_usage_left }}"
+                        type="button"
+                        class="edit-btn text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
+                    >
+                        Edit
+                    </button>
+                </td>
             </tr>
+
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<div id="update-member-form-div" class="justify-center px-10 py-7 hidden">
+    <form
+        class="w-96 bg-gray-800 p-10 rounded-xl shadow-[0_35px_60px_-15px_rgba(50,50,50,0.9)]"
+    >
+        <div class="mb-6">
+            <label
+                for="update-member-id"
+                class="block mb-2 text-sm font-medium text-white"
+                >User ID</label
+            >
+            <input
+                type="number"
+                id="update-member-id"
+                class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+        <div class="mb-6">
+            <label
+                for="update-member-channel-id"
+                class="block mb-2 text-sm font-medium text-white"
+                >Channel ID</label
+            >
+            <input
+                type="number"
+                id="update-member-channel-id"
+                class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
+        <div class="mb-6">
+            <label
+                for="update-member-usage-left"
+                class="block mb-2 text-sm font-medium text-white"
+                >Usage Left</label
+            >
+            <input
+                type="number"
+                id="update-member-usage-left"
+                class="text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                required
+            />
+        </div>
+
+        <button
+            id="update-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-green-600 hover:bg-green-700 focus:ring-green-900"
+        >
+            Update
+        </button>
+
+        <button
+            id="delete-btn"
+            type="submit"
+            class="mt-3 focus:outline-none w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 bg-red-600 hover:bg-red-700 focus:ring-red-900"
+        >
+            Delete
+        </button>
+        <button id="go-back-btn" class="mt-3 text-blue-600 focus">
+            <- Go back
+        </button>
+        <div
+            class="ch-update-success mt-3 text-sm text-green-400 hidden"
+            role="alert"
+        >
+            <span class="font-medium">Done.</span>
+        </div>
+
+        <div
+            class="ch-update-error mt-3 text-sm text-red-400 hidden"
+            role="alert"
+        >
+            <span class="font-medium">Error...</span>
+        </div>
+    </form>
+</div>
+
 <script>
+    $("#go-back-btn").click(function (e) {
+        document.getElementById("main-members-table").style.display = "flex";
+
+        document.getElementById("search-box").style.display = "block";
+        document.getElementById("update-member-form-div").style.display =
+            "none";
+
+        return false;
+    });
 
     $(".search-btn").click(function (e) {
         var user_id = $("#default-search").val();
@@ -84,6 +188,131 @@
 
     $(".show-all-btn").click(function (e) {
         $(".member-row").show();
+        return false;
+    });
+
+    function successErrorAlert(isSuccess, isAdd) {
+        if (isAdd) {
+            if (isSuccess) {
+                $(".ch-add-success").show();
+                $(".ch-add-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-add-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-add-success").hide();
+                $(".ch-add-error").show();
+                setTimeout(() => {
+                    $(".ch-add-error").hide();
+                }, 3000);
+            }
+        } else {
+            if (isSuccess) {
+                $(".ch-update-success").show();
+                $(".ch-update-error").hide();
+
+                setTimeout(() => {
+                    $(".ch-update-success").hide();
+                }, 3000);
+            } else {
+                $(".ch-update-success").hide();
+                $(".ch-update-error").show();
+                setTimeout(() => {
+                    $(".ch-update-error").hide();
+                }, 3000);
+            }
+        }
+    }
+
+    var data_mem_pk = "0";
+
+    $(document).on("click", ".edit-btn", function (e) {
+        data_mem_pk = $(this).attr("data-mem-pk");
+        var data_mem_id = $(this).attr("data-mem-id");
+        var data_mem_ch_id = $(this).attr("data-mem-ch-id");
+        var data_mem_usage_left = $(this).attr("data-mem-usage-left");
+
+        console.log(
+            data_mem_pk,
+            data_mem_id,
+            data_mem_ch_id,
+            data_mem_usage_left
+        );
+
+        document.getElementById("main-members-table").style.display = "none";
+        document.getElementById("search-box").style.display = "none";
+        document.getElementById("update-member-form-div").style.display =
+            "flex";
+
+        $("#update-member-id").val(data_mem_id);
+        $("#update-member-channel-id").val(data_mem_ch_id);
+        $("#update-member-usage-left").val(data_mem_usage_left);
+    });
+
+    $("#update-btn").click(function (e) {
+        var new_mem_id = $("#update-member-id").val();
+        var new_mem_ch_id = $("#update-member-channel-id").val();
+        var new_mem_usage_left = $("#update-member-usage-left").val();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:update_member' %}",
+            data: {
+                mem_pk: data_mem_pk,
+                mem_user_id: new_mem_id,
+                mem_ch_id: new_mem_ch_id,
+                new_mem_usage_left: new_mem_usage_left,
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(`Member ${new_mem_id} updated.`);
+                successErrorAlert(true, false);
+            },
+            error: function (error) {
+                console.log(error);
+                successErrorAlert(false, false);
+            },
+        });
+        return false;
+    });
+
+    $("#delete-btn").click(function (e) {
+        e.preventDefault();
+        console.log(data_mem_pk);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api:delete_member' %}",
+            data: {
+                mem_pk: data_mem_pk,
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            datatype: "json",
+            success: function (data) {
+                console.log(`Channel ${data} deleted.`);
+
+                document.getElementById("main-members-table").style.display =
+                    "flex";
+
+                document.getElementById("search-box").style.display = "block";
+                document.getElementById(
+                    "update-member-form-div"
+                ).style.display = "none";
+
+                $(`#member-row-${data_mem_pk}`).hide();
+
+                $("#update-member-id").val("");
+                $("#update-member-channel-id").val("");
+                $("#update-member-usage-left").val("");
+
+                successErrorAlert(true, false);
+            },
+            error: function (error) {
+                console.log(error);
+                successErrorAlert(false, false);
+            },
+        });
         return false;
     });
 </script>
