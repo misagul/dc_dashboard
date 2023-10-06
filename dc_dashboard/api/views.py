@@ -159,6 +159,7 @@ def update_cookie_status(request):
         cookie = Cookie.objects.get(pk=cookie_pk)
         cookie.cookie_status = cookie_status
         cookie.save()
+        return HttpResponse(cookie_status)
 
 @csrf_exempt
 def add_cookie_usage(request):

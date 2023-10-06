@@ -13,6 +13,7 @@ urlpatterns = [
 
     path("get_cookies/", views.get_cookies, name="get_cookies"),
     path("get_current_cookie/", views.get_current_cookie, name="get_current_cookie"),
+    path("add_cookie_usage/", views.add_cookie_usage, name="add_cookie_usage"),
     path("update_cookie_status/", views.update_cookie_status, name="update_cookie_status"),
     path("add_cookie/", views.add_cookie, name="add_cookie"),
     path("update_cookie/", views.update_cookie, name="update_cookie"),
