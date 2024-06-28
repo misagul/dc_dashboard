@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_+h8k4927m9t35g2t*ol$aw%e3kgb3$r+an3uybv0qmv3rbs!$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -139,7 +139,7 @@ INTERNAL_IPS = [
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://6fc2-93-177-102-23.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 

@@ -1,2 +1,4 @@
-env
-dc_dashboard
+*__pycache__/
+*.sqlite3
+venv/
+.env
