@@ -40,9 +40,6 @@ INSTALLED_APPS = [
 
     'api',
     'dashboard',
-    'tailwind',
-    'theme',
-    'django_browser_reload',
     
 ]
 
@@ -55,7 +52,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = 'dc_dashboard.urls'
